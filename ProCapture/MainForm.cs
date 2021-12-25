@@ -72,9 +72,9 @@ namespace ProCapture
         private async void scanButton_Click(object sender, EventArgs e)
         {
             mcPath = string.IsNullOrEmpty(FolderTextBox.Text) ? FolderTextBox.PlaceholderText : FolderTextBox.Text;
-            if (!Directory.Exists(mcPath))
+            if (!(Directory.Exists(mcPath)))
             {
-                MessageBox.Show("Minecraft Folder Not Found.Enter A Valid Path");
+                MessageBox.Show("Minecraft Folder Not Found.\nPlease Enter You`r Minecraft Folders Path in That Text Box At The First Page.");
                 return;
             }
             await Scan();
@@ -83,72 +83,102 @@ namespace ProCapture
         private bool isWorking = false;
         private async Task Scan()
         {
-            isWorking = true;
-            statusLabel.Text = "Scanning...";
-            string id = await GetId(8);
-            await Task.Run(async () =>
+            try
             {
-                Dictionary<string, Object> jsonData = new Dictionary<string, Object>();
-                jsonData.Add("id", id);
-
-                var versions = Directory.GetDirectories(mcPath + @"\versions").ToList();
-                var mods = Directory.GetFiles(mcPath + @"\mods").ToList();
-                var desktop = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
-                var downloads = Directory.GetFiles($@"{Environment
-                    .GetFolderPath(Environment.SpecialFolder.UserProfile)}\Downloads");
-
-                var versionNames = new List<string>();
-                var modNames = new List<string>();
-                var desktopFileNames = new List<string>();
-                var downloadNames = new List<string>();
-
-                foreach (var item in versions)
+                isWorking = true;
+                statusLabel.Text = "Scanning...";
+                string id = await GetId(8);
+                await Task.Run(() =>
                 {
-                    versionNames.Add(new DirectoryInfo(item).Name);
-                }
+                    Dictionary<string, Object> jsonData = new Dictionary<string, Object>();
+                    jsonData.Add("id", id);
 
-                foreach (var item in mods)
-                {
-                    modNames.Add(new FileInfo(item).Name);
-                }
-                foreach (var item in Directory.GetDirectories(mcPath + @"\mods"))
-                {
-                    modNames.Add(new DirectoryInfo(item).Name);
-                }
+                    List<string> mods = new List<string>();
+                    List<object> modNames = new List<object>();
+                    List<string> versions = new List<string>();
+                    List<string> versionNames = new List<string>();
 
-                foreach (var item in desktop)
-                {
-                    desktopFileNames.Add(new FileInfo(item).Name);
-                }
-                foreach (var item in Directory.GetDirectories(Environment
-                    .GetFolderPath(Environment.SpecialFolder.Desktop)))
-                {
-                    desktopFileNames.Add(new DirectoryInfo(item).Name);
-                }
+                    if (Directory.Exists(mcPath + @"\versions"))
+                    {
+                        versions.AddRange(Directory.GetDirectories(mcPath + @"\versions").ToList());
+                        foreach (var item in versions)
+                        {
+                            versionNames.Add(new DirectoryInfo(item).Name);
+                        }
+                    }
 
-                foreach (var item in downloads)
-                {
-                    downloadNames.Add(new FileInfo(item).Name);
-                }
-                foreach (var item in Directory.GetDirectories($@"{Environment
-                    .GetFolderPath(Environment.SpecialFolder.UserProfile)}\Downloads"))
-                {
-                    desktopFileNames.Add(new DirectoryInfo(item).Name);
-                }
+                    if ((Directory.Exists(mcPath + @"\mods")))
+                    {
+                        mods.AddRange(Directory.GetFiles(mcPath + @"\mods").ToList());
+                        foreach (var item in mods)
+                        {
+                            modNames.Add(new FileInfo(item).Name);
+                        }
+                        foreach (var item in Directory.GetDirectories(mcPath + @"\mods"))
+                        {
+                            var folder = new List<string>();
+                            foreach (var itemInItem in Directory.GetFiles(item))
+                            {
+                                folder.Add(new FileInfo(itemInItem).Name);
+                            }
+                            modNames.Add(folder);
+                        }
+                    }
 
-                jsonData.Add("versions", versionNames);
-                jsonData.Add("mods", modNames);
-                jsonData.Add("desktop", desktopFileNames);
-                jsonData.Add("downloads", downloadNames);
+                    var desktop = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+                    var downloads = Directory.GetFiles($@"{Environment
+                        .GetFolderPath(Environment.SpecialFolder.UserProfile)}\Downloads");
 
-                string json = JsonConvert.SerializeObject(jsonData);
+                    var desktopFileNames = new List<string>();
+                    var downloadNames = new List<string>();
 
-                //await MakeRequest(json);
-                MessageBox.Show(json);
-            });
-            isWorking = false;
-            statusLabel.Text = "Ready";
-            (new ShowIdForm(id)).ShowDialog();
+                    foreach (var item in desktop)
+                    {
+                        desktopFileNames.Add(new FileInfo(item).Name);
+                    }
+                    foreach (var item in Directory.GetDirectories(Environment
+                        .GetFolderPath(Environment.SpecialFolder.Desktop)))
+                    {
+                        desktopFileNames.Add(new DirectoryInfo(item).Name);
+                    }
+
+                    foreach (var item in downloads)
+                    {
+                        downloadNames.Add(new FileInfo(item).Name);
+                    }
+                    foreach (var item in Directory.GetDirectories($@"{Environment
+                        .GetFolderPath(Environment.SpecialFolder.UserProfile)}\Downloads"))
+                    {
+                        downloadNames.Add(new DirectoryInfo(item).Name);
+                    }
+
+                    jsonData.Add("desktop", desktopFileNames);
+                    jsonData.Add("downloads", downloadNames);
+                    jsonData.Add("versions", versionNames);
+                    jsonData.Add("mods", modNames);
+
+                    string json = JsonConvert.SerializeObject(jsonData);
+
+                    //await MakeRequest(json);
+                    MessageBox.Show(json);
+                    (new ShowIdForm(id)).ShowDialog();
+                });
+
+            }
+            catch (IOException)
+            {
+                MessageBox.Show("Something Went Wrong. It Is About Files And Folders Probably.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            finally
+            {
+                isWorking = false;
+                statusLabel.Text = "Ready";
+            }
+
         }
 
         private async Task MakeRequest(string json)

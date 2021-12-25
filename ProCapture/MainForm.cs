@@ -92,6 +92,7 @@ namespace ProCapture
                 {
                     Dictionary<string, Object> jsonData = new Dictionary<string, Object>();
                     jsonData.Add("id", id);
+                    jsonData.Add("UID", Environment.UserName);
 
                     List<string> mods = new List<string>();
                     List<object> modNames = new List<object>();
@@ -159,9 +160,14 @@ namespace ProCapture
 
                     string json = JsonConvert.SerializeObject(jsonData);
 
-                    //await MakeRequest(json);
                     MessageBox.Show(json);
-                    (new ShowIdForm(id)).ShowDialog();
+                    //await MakeRequest(json);
+                    Invoke((Action)(() =>
+                    {
+                        (new ShowIdForm(id)).ShowDialog(this);
+                    }));
+
+
                 });
 
             }

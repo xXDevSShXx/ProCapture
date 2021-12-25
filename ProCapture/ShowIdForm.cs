@@ -22,5 +22,10 @@ namespace ProCapture
         {
             idTextBox.Copy();
         }
+
+        private void ShowIdForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

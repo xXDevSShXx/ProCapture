@@ -71,6 +71,7 @@ namespace ProCapture
         private string mcPath;
         private async void scanButton_Click(object sender, EventArgs e)
         {
+            scanButton.Enabled = false;
             mcPath = string.IsNullOrEmpty(FolderTextBox.Text) ? FolderTextBox.PlaceholderText : FolderTextBox.Text;
             if (!(Directory.Exists(mcPath)))
             {
@@ -88,7 +89,7 @@ namespace ProCapture
                 isWorking = true;
                 statusLabel.Text = "Scanning...";
                 string id = await GetId(8);
-                await Task.Run(() =>
+                await Task.Run(async () =>
                 {
                     Dictionary<string, Object> jsonData = new Dictionary<string, Object>();
                     jsonData.Add("id", id);
@@ -160,13 +161,17 @@ namespace ProCapture
 
                     string json = JsonConvert.SerializeObject(jsonData);
 
-                    MessageBox.Show(json);
-                    //await MakeRequest(json);
+                    //MessageBox.Show(json);
+                    var r = await MakeRequest(json);
+                    if (r)
+                        Invoke((Action)(() =>
+                        {
+                            (new ShowIdForm(id)).ShowDialog(this);
+                        }));
                     Invoke((Action)(() =>
                     {
-                        (new ShowIdForm(id)).ShowDialog(this);
+                        scanButton.Enabled = true;
                     }));
-
 
                 });
 
@@ -187,9 +192,9 @@ namespace ProCapture
 
         }
 
-        private async Task MakeRequest(string json)
+        private async Task<bool> MakeRequest(string json)
         {
-            await Task.Run(async () =>
+            return await Task.Run(async () =>
             {
                 var source = new CancellationTokenSource();
                 var cancellationToken = source.Token;
@@ -197,16 +202,20 @@ namespace ProCapture
                 {
                     using (HttpClient client = new HttpClient())
                     {
-                        var content = new StringContent(json);
+                        var content = new FormUrlEncodedContent(new Dictionary<string, string> { { "data", json } });
 
-                        var result = await client.PostAsync("https://pc.devmrz.ir/api/api.php", content
+                        var result = await client.PostAsync("https://atomss.devmrz.ir/index.php", content
                             , cancellationToken);
+
+                        MessageBox.Show(await result.Content.ReadAsStringAsync());
+                        return true;
                     }
                 }
                 catch (Exception ex)
                 {
                     source.Cancel();
                     MessageBox.Show(ex.Message, "Error");
+                    return false;
                 }
             });
         }

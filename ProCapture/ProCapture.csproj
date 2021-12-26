@@ -5,6 +5,7 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>atomcraft_transparent.ico</ApplicationIcon>
+    <StartupObject>ProCapture.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

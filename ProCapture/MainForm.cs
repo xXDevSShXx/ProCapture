@@ -74,7 +74,7 @@ namespace ProCapture
         {
             scanButton.Enabled = false;
             mcPath = string.IsNullOrEmpty(FolderTextBox.Text) ? FolderTextBox.PlaceholderText : FolderTextBox.Text;
-            if (!(Directory.Exists(mcPath)))
+            if (!(Directory.Exists(mcPath)) || !(Directory.Exists(mcPath + @"\versions")))
             {
                 MessageBox.Show("Minecraft Folder Not Found.\nPlease Enter You`r Minecraft Folders Path in That Text Box At The First Page.");
                 return;
@@ -98,6 +98,7 @@ namespace ProCapture
                     List<object> modNames = new List<object>();
                     List<string> versions = new List<string>();
                     List<string> versionNames = new List<string>();
+                    List<string> modfolders = new List<string>();
 
                     if (Directory.Exists(mcPath + @"\versions"))
                     {
@@ -117,12 +118,15 @@ namespace ProCapture
                         }
                         foreach (var item in Directory.GetDirectories(mcPath + @"\mods"))
                         {
-                            var folder = new List<string>();
+                            var folder = new StringBuilder();
+                            folder.Append(new DirectoryInfo(item).Name);
+                            folder.Append(";");
                             foreach (var itemInItem in Directory.GetFiles(item))
                             {
-                                folder.Add(new FileInfo(itemInItem).Name);
+                                folder.Append(new FileInfo(itemInItem).Name);
+                                folder.Append(";");
                             }
-                            modNames.Add(folder);
+                            modfolders.Add(folder.ToString());
                         }
                     }
 
@@ -132,6 +136,8 @@ namespace ProCapture
 
                     var desktopFileNames = new List<string>();
                     var downloadNames = new List<string>();
+                    var desktopfolders = new List<string>();
+                    var downloadfolders = new List<string>();
 
                     foreach (var item in desktop)
                     {
@@ -140,7 +146,15 @@ namespace ProCapture
                     foreach (var item in Directory.GetDirectories(Environment
                         .GetFolderPath(Environment.SpecialFolder.Desktop)))
                     {
-                        desktopFileNames.Add(new DirectoryInfo(item).Name);
+                        var folder = new StringBuilder();
+                        folder.Append(new DirectoryInfo(item).Name);
+                        folder.Append(";");
+                        foreach (var itemInItem in Directory.GetFiles(item))
+                        {
+                            folder.Append(new FileInfo(itemInItem).Name);
+                            folder.Append(";");
+                        }
+                        desktopfolders.Add(folder.ToString());
                     }
 
                     foreach (var item in downloads)
@@ -150,21 +164,33 @@ namespace ProCapture
                     foreach (var item in Directory.GetDirectories($@"{Environment
                         .GetFolderPath(Environment.SpecialFolder.UserProfile)}\Downloads"))
                     {
-                        downloadNames.Add(new DirectoryInfo(item).Name);
+                        var folder = new StringBuilder();
+                        folder.Append(new DirectoryInfo(item).Name);
+                        folder.Append(";");
+                        foreach (var itemInItem in Directory.GetFiles(item))
+                        {
+                            folder.Append(new FileInfo(itemInItem).Name);
+                            folder.Append(";");
+                        }
+                        downloadfolders.Add(folder.ToString());
                     }
 
                     jsonData.Add("desktop", desktopFileNames);
                     jsonData.Add("downloads", downloadNames);
                     jsonData.Add("versions", versionNames);
                     jsonData.Add("mods", modNames);
+                    jsonData.Add("modfolders", modfolders);
+                    jsonData.Add("desktopfolders", desktopfolders);
+                    jsonData.Add("downloadfolders", downloadfolders);
 
                     string json = JsonConvert.SerializeObject(jsonData);
 
-                    //MessageBox.Show(json);
                     var r = await MakeRequest(json);
                     if (r.IsSuccess)
                         Invoke((Action)(() =>
                         {
+                            isWorking = false;
+                            statusLabel.Text = "Ready";
                             (new ShowIdForm(r.Entity)).ShowDialog(this);
                         }));
                     Invoke((Action)(() =>
@@ -201,6 +227,8 @@ namespace ProCapture
                 {
                     using (HttpClient client = new HttpClient())
                     {
+
+
                         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                         var result = await client.PostAsync("https://atomss.devmrz.ir/insert.php", content

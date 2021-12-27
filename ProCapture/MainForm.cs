@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Text;
 using System.Threading;
+using ProCapture.Models;
 
 namespace ProCapture
 {
@@ -88,11 +89,9 @@ namespace ProCapture
             {
                 isWorking = true;
                 statusLabel.Text = "Scanning...";
-                string id = await GetId(8);
                 await Task.Run(async () =>
                 {
                     Dictionary<string, Object> jsonData = new Dictionary<string, Object>();
-                    jsonData.Add("id", id);
                     jsonData.Add("UID", Environment.UserName);
 
                     List<string> mods = new List<string>();
@@ -163,10 +162,10 @@ namespace ProCapture
 
                     //MessageBox.Show(json);
                     var r = await MakeRequest(json);
-                    if (r)
+                    if (r.IsSuccess)
                         Invoke((Action)(() =>
                         {
-                            (new ShowIdForm(id)).ShowDialog(this);
+                            (new ShowIdForm(r.Entity)).ShowDialog(this);
                         }));
                     Invoke((Action)(() =>
                     {
@@ -192,7 +191,7 @@ namespace ProCapture
 
         }
 
-        private async Task<bool> MakeRequest(string json)
+        private async Task<ResponseBase<string>> MakeRequest(string json)
         {
             return await Task.Run(async () =>
             {
@@ -202,42 +201,26 @@ namespace ProCapture
                 {
                     using (HttpClient client = new HttpClient())
                     {
-                        var content = new FormUrlEncodedContent(new Dictionary<string, string> { { "data", json } });
+                        var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                        var result = await client.PostAsync("https://atomss.devmrz.ir/index.php", content
+                        var result = await client.PostAsync("https://atomss.devmrz.ir/insert.php", content
                             , cancellationToken);
 
-                        MessageBox.Show(await result.Content.ReadAsStringAsync());
-                        return true;
+                        return new ResponseBase<string>(true, await result.Content.ReadAsStringAsync());
                     }
+                }
+                catch (HttpRequestException)
+                {
+                    source.Cancel();
+                    MessageBox.Show($"Could Not Connect To Servers. Please Check Your Internet Connection.", "Error");
+                    return new ResponseBase<string>(false, null);
                 }
                 catch (Exception ex)
                 {
                     source.Cancel();
                     MessageBox.Show(ex.Message, "Error");
-                    return false;
+                    return new ResponseBase<string>(false, null);
                 }
-            });
-        }
-
-        private async Task<string> GetId(int length)
-        {
-            return await Task.Run(() =>
-            {
-                StringBuilder builder = new StringBuilder();
-                Random random = new Random();
-
-                char letter;
-
-                for (int i = 0; i < length; i++)
-                {
-                    double flt = random.NextDouble();
-                    int shift = Convert.ToInt32(Math.Floor(25 * flt));
-                    letter = Convert.ToChar(shift + 65);
-                    builder.Append(letter);
-                }
-
-                return builder.ToString();
             });
         }
     }

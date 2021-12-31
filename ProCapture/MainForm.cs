@@ -105,7 +105,7 @@ namespace ProCapture
                         versions.AddRange(Directory.GetDirectories(mcPath + @"\versions").ToList());
                         foreach (var item in versions)
                         {
-                            versionNames.Add(new DirectoryInfo(item).Name);
+                            versionNames.Add(new DirectoryInfo(item).Name.Replace("\'","\\\'").Replace("\"","\\\""));
                         }
                     }
 
@@ -119,11 +119,11 @@ namespace ProCapture
                         foreach (var item in Directory.GetDirectories(mcPath + @"\mods"))
                         {
                             var folder = new StringBuilder();
-                            folder.Append(new DirectoryInfo(item).Name);
+                            folder.Append(new DirectoryInfo(item).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
                             folder.Append(";");
                             foreach (var itemInItem in Directory.GetFiles(item))
                             {
-                                folder.Append(new FileInfo(itemInItem).Name);
+                                folder.Append(new FileInfo(itemInItem).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
                                 folder.Append(";");
                             }
                             modfolders.Add(folder.ToString());
@@ -141,17 +141,17 @@ namespace ProCapture
 
                     foreach (var item in desktop)
                     {
-                        desktopFileNames.Add(new FileInfo(item).Name);
+                        desktopFileNames.Add(new FileInfo(item).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
                     }
                     foreach (var item in Directory.GetDirectories(Environment
                         .GetFolderPath(Environment.SpecialFolder.Desktop)))
                     {
                         var folder = new StringBuilder();
-                        folder.Append(new DirectoryInfo(item).Name);
+                        folder.Append(new DirectoryInfo(item).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
                         folder.Append(";");
                         foreach (var itemInItem in Directory.GetFiles(item))
                         {
-                            folder.Append(new FileInfo(itemInItem).Name);
+                            folder.Append(new FileInfo(itemInItem).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
                             folder.Append(";");
                         }
                         desktopfolders.Add(folder.ToString());
@@ -159,7 +159,7 @@ namespace ProCapture
 
                     foreach (var item in downloads)
                     {
-                        downloadNames.Add(new FileInfo(item).Name);
+                        downloadNames.Add(new FileInfo(item).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
                     }
                     foreach (var item in Directory.GetDirectories($@"{Environment
                         .GetFolderPath(Environment.SpecialFolder.UserProfile)}\Downloads"))
@@ -169,7 +169,7 @@ namespace ProCapture
                         folder.Append(";");
                         foreach (var itemInItem in Directory.GetFiles(item))
                         {
-                            folder.Append(new FileInfo(itemInItem).Name);
+                            folder.Append(new FileInfo(itemInItem).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
                             folder.Append(";");
                         }
                         downloadfolders.Add(folder.ToString());

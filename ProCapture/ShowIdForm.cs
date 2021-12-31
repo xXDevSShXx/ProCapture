@@ -48,7 +48,11 @@ namespace ProCapture
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
-            Pen pen = new Pen(ThemeInfo.GetThemeColor(), 2);
+            Pen pen = new Pen(Color.FromArgb(
+                              Convert.ToInt32(AppSettings.Settings["ThemeColor:r"])
+                            , Convert.ToInt32(AppSettings.Settings["ThemeColor:g"])
+                            , Convert.ToInt32(AppSettings.Settings["ThemeColor:b"])
+                            ), 2);
             Rectangle rectangle = new Rectangle(0, 0, Width, Height);
             graphics.DrawRectangle(pen, rectangle);
             base.OnPaint(e);

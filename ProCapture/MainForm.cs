@@ -57,8 +57,13 @@ namespace ProCapture
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
-            Pen pen = new Pen(ThemeInfo.GetThemeColor(), 2);
+            Pen pen = new Pen(Color.FromArgb(
+                  Convert.ToInt32(AppSettings.Settings["ThemeColor:r"])
+                , Convert.ToInt32(AppSettings.Settings["ThemeColor:g"])
+                , Convert.ToInt32(AppSettings.Settings["ThemeColor:b"])
+                ), 2);
             Rectangle rectangle = new Rectangle(0, 0, Width, Height);
+
             graphics.DrawRectangle(pen, rectangle);
             graphics.DrawImage(Icon.ToBitmap(), 5, 5, 24, 24);
             graphics.DrawString(Title, Font, new SolidBrush(Color.Snow), 30, 11);
@@ -105,7 +110,7 @@ namespace ProCapture
                         versions.AddRange(Directory.GetDirectories(mcPath + @"\versions").ToList());
                         foreach (var item in versions)
                         {
-                            versionNames.Add(new DirectoryInfo(item).Name.Replace("\'","\\\'").Replace("\"","\\\""));
+                            versionNames.Add(new DirectoryInfo(item).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
                         }
                     }
 

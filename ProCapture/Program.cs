@@ -17,6 +17,9 @@ namespace ProCapture
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            AppSettings.Initialize(Application.StartupPath, "appSettings.json");
+
             Application.Run(new MainForm());
         }
     }

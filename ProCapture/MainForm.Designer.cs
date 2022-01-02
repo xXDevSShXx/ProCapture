@@ -31,10 +31,13 @@ namespace ProCapture
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.exitButton = new System.Windows.Forms.PictureBox();
-            this.statusLabel = new System.Windows.Forms.Label();
             this.scanButton = new System.Windows.Forms.Button();
             this.FolderTextBox = new System.Windows.Forms.TextBox();
+            this.statusLabel = new System.Windows.Forms.Label();
+            this.titleLabel = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.exitButton)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // exitButton
@@ -50,36 +53,60 @@ namespace ProCapture
             this.exitButton.TabStop = false;
             this.exitButton.Click += new System.EventHandler(this.exitButton_Click);
             // 
-            // statusLabel
-            // 
-            this.statusLabel.AutoSize = true;
-            this.statusLabel.Font = new System.Drawing.Font("Segoe UI", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.statusLabel.Location = new System.Drawing.Point(150, 68);
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(140, 59);
-            this.statusLabel.TabIndex = 1;
-            this.statusLabel.Text = "Ready";
-            // 
             // scanButton
             // 
             this.scanButton.AutoEllipsis = true;
+            this.scanButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(85)))), ((int)(((byte)(255)))));
+            this.scanButton.FlatAppearance.BorderSize = 0;
             this.scanButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.scanButton.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.scanButton.Location = new System.Drawing.Point(156, 191);
+            this.scanButton.Location = new System.Drawing.Point(132, 256);
             this.scanButton.Name = "scanButton";
-            this.scanButton.Size = new System.Drawing.Size(129, 42);
+            this.scanButton.Size = new System.Drawing.Size(176, 38);
             this.scanButton.TabIndex = 2;
             this.scanButton.Text = "Scan";
-            this.scanButton.UseVisualStyleBackColor = true;
+            this.scanButton.UseVisualStyleBackColor = false;
             this.scanButton.Click += new System.EventHandler(this.scanButton_Click);
             // 
             // FolderTextBox
             // 
-            this.FolderTextBox.Location = new System.Drawing.Point(71, 148);
+            this.FolderTextBox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.FolderTextBox.Location = new System.Drawing.Point(54, 216);
             this.FolderTextBox.Name = "FolderTextBox";
             this.FolderTextBox.PlaceholderText = "Minecraft Folder";
-            this.FolderTextBox.Size = new System.Drawing.Size(332, 23);
+            this.FolderTextBox.Size = new System.Drawing.Size(332, 29);
             this.FolderTextBox.TabIndex = 3;
+            this.FolderTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.AutoSize = true;
+            this.statusLabel.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.statusLabel.Location = new System.Drawing.Point(188, 182);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(65, 28);
+            this.statusLabel.TabIndex = 5;
+            this.statusLabel.Text = "Ready";
+            // 
+            // titleLabel
+            // 
+            this.titleLabel.AutoSize = true;
+            this.titleLabel.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.titleLabel.Location = new System.Drawing.Point(126, 141);
+            this.titleLabel.Name = "titleLabel";
+            this.titleLabel.Size = new System.Drawing.Size(189, 45);
+            this.titleLabel.TabIndex = 6;
+            this.titleLabel.Text = "Pro Capture";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::ProCapture.Resources.atomcraft_transparent;
+            this.pictureBox1.Location = new System.Drawing.Point(149, 5);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(143, 143);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 7;
+            this.pictureBox1.TabStop = false;
             // 
             // MainForm
             // 
@@ -89,9 +116,11 @@ namespace ProCapture
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(33)))), ((int)(((byte)(68)))));
             this.ClientSize = new System.Drawing.Size(440, 306);
             this.ControlBox = false;
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.titleLabel);
+            this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.FolderTextBox);
             this.Controls.Add(this.scanButton);
-            this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.exitButton);
             this.ForeColor = System.Drawing.Color.Snow;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -103,6 +132,7 @@ namespace ProCapture
             this.Load += new System.EventHandler(this.Form_Load);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form_MouseDown);
             ((System.ComponentModel.ISupportInitialize)(this.exitButton)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -110,9 +140,11 @@ namespace ProCapture
 
         #endregion
         private System.Windows.Forms.PictureBox exitButton;
-        private System.Windows.Forms.Label statusLabel;
         private System.Windows.Forms.Button scanButton;
         private System.Windows.Forms.TextBox FolderTextBox;
+        private System.Windows.Forms.Label statusLabel;
+        private System.Windows.Forms.Label titleLabel;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 
 

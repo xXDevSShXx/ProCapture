@@ -53,10 +53,10 @@ namespace ProCapture
             Application.Exit();
         }
 
-        public string Title => "Pro Capture";
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
+
             Pen pen = new Pen(Color.FromArgb(
                   Convert.ToInt32(AppSettings.Settings["ThemeColor:r"])
                 , Convert.ToInt32(AppSettings.Settings["ThemeColor:g"])
@@ -65,14 +65,16 @@ namespace ProCapture
             Rectangle rectangle = new Rectangle(0, 0, Width, Height);
 
             graphics.DrawRectangle(pen, rectangle);
-            graphics.DrawImage(Icon.ToBitmap(), 5, 5, 24, 24);
-            graphics.DrawString(Title, Font, new SolidBrush(Color.Snow), 30, 11);
             base.OnPaint(e);
         }
 
         private void Form_Load(object sender, EventArgs e)
         {
-            FolderTextBox.PlaceholderText = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\.minecraft";
+            statusLabel.Text = "Ready";
+            titleLabel.Text = "Pro Capture";
+            Invalidate();
+
+            FolderTextBox.Text = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\.minecraft";
         }
         private string mcPath;
         private async void scanButton_Click(object sender, EventArgs e)
@@ -94,6 +96,7 @@ namespace ProCapture
             {
                 isWorking = true;
                 statusLabel.Text = "Scanning...";
+                Invalidate();
                 await Task.Run(async () =>
                 {
                     Dictionary<string, Object> jsonData = new Dictionary<string, Object>();
@@ -218,6 +221,7 @@ namespace ProCapture
             {
                 isWorking = false;
                 statusLabel.Text = "Ready";
+                Invalidate();
             }
 
         }

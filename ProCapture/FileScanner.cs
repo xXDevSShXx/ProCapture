@@ -9,7 +9,7 @@ namespace ProCapture
     public static class FileScanner
     {
 
-        public static void Initialize() => Signatures = File.ReadAllText($"{Application.StartupPath}\\Signatures.txt");
+        public static void Initialize(string signatures) => Signatures = signatures;
 
         private static string GetMD5FromFile(string path)
         {

@@ -18,7 +18,7 @@ namespace ProCapture
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            AppSettings.Initialize(Application.StartupPath, "appSettings.json");
+            App.Initialize(Application.StartupPath, "appSettings.json");
 
             Application.Run(new MainForm());
         }

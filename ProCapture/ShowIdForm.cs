@@ -49,9 +49,9 @@ namespace ProCapture
         {
             Graphics graphics = e.Graphics;
             Pen pen = new Pen(Color.FromArgb(
-                              Convert.ToInt32(AppSettings.Settings["ThemeColor:r"])
-                            , Convert.ToInt32(AppSettings.Settings["ThemeColor:g"])
-                            , Convert.ToInt32(AppSettings.Settings["ThemeColor:b"])
+                              Convert.ToInt32(App.Settings["ThemeColor:r"])
+                            , Convert.ToInt32(App.Settings["ThemeColor:g"])
+                            , Convert.ToInt32(App.Settings["ThemeColor:b"])
                             ), 2);
             Rectangle rectangle = new Rectangle(0, 0, Width, Height);
             graphics.DrawRectangle(pen, rectangle);

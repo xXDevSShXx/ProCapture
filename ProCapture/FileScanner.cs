@@ -3,13 +3,14 @@ using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace ProCapture
 {
     public static class FileScanner
     {
 
-        public static void Initialize(string signatures) => Signatures = signatures;
+        public static void Initialize(Dictionary<string, string> signatures) => Signatures = signatures;
 
         private static string GetMD5FromFile(string path)
         {
@@ -22,20 +23,20 @@ namespace ProCapture
             }
         }
 
-        public static string Signatures;
+        public static Dictionary<string, string> Signatures;
         public static List<string> Scan(List<string> filePathes)
         {
-            var susFiles = new List<string>();
+            var ghostClients = new List<string>();
             foreach (var item in filePathes)
             {
                 string file = GetMD5FromFile(item);
-
-                if (Signatures.Contains(file))
+                foreach (var signature in Signatures)
                 {
-                    susFiles.Add(item);
+                    if (signature.Value.Contains(file))
+                        ghostClients.Add(signature.Key);
                 }
             }
-            return susFiles;
+            return ghostClients;
         }
     }
 }

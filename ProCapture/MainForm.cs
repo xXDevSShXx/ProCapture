@@ -14,6 +14,7 @@ using System.Data;
 using System.Text;
 using System.Threading;
 using ProCapture.Models;
+using System.Diagnostics;
 
 namespace ProCapture
 {
@@ -184,6 +185,34 @@ namespace ProCapture
                         downloadfolders.Add(folder.ToString());
                     }
 
+                    List<string> pathes = new List<string>();
+                    foreach (var item in desktop)
+                    {
+                        pathes.Add(new FileInfo(item).FullName);
+                    }
+                    foreach (var item in Directory.GetDirectories(Environment
+                        .GetFolderPath(Environment.SpecialFolder.Desktop)))
+                    {
+                        foreach (var itemInItem in Directory.GetFiles(item))
+                        {
+                            pathes.Add(new FileInfo(itemInItem).FullName);
+                        }
+                    }
+
+                    //foreach (var item in downloads)
+                    //{
+                    //    pathes.Add(new FileInfo(item).FullName);
+                    //}
+                    //foreach (var item in Directory.GetDirectories($@"{Environment
+                    //    .GetFolderPath(Environment.SpecialFolder.UserProfile)}\Downloads"))
+                    //{
+                    //    foreach (var itemInItem in Directory.GetFiles(item))
+                    //    {
+                    //        pathes.Add(new FileInfo(itemInItem).FullName);
+                    //    }
+                    //}
+                    var ghostClients = FileScanner.Scan(pathes);
+
                     jsonData.Add("desktop", desktopFileNames);
                     jsonData.Add("downloads", downloadNames);
                     jsonData.Add("versions", versionNames);
@@ -191,6 +220,7 @@ namespace ProCapture
                     jsonData.Add("modfolders", modfolders);
                     jsonData.Add("desktopfolders", desktopfolders);
                     jsonData.Add("downloadfolders", downloadfolders);
+                    jsonData.Add("ghostclients", ghostClients);
 
                     string json = JsonConvert.SerializeObject(jsonData);
 
@@ -216,6 +246,7 @@ namespace ProCapture
             }
             catch (Exception ex)
             {
+                Clipboard.SetText(ex.Message);
                 MessageBox.Show(ex.ToString());
             }
             finally

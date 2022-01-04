@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
@@ -23,7 +24,10 @@ namespace ProCapture
                 using (HttpClient client = new HttpClient())
                 {
                     var result = await client.GetAsync($"{Resources.Site_Url}/get.php",cancellationToken);
-                    FileScanner.Initialize(await result.Content.ReadAsStringAsync());
+                    var signatures = JsonConvert.DeserializeObject<Dictionary<string, string>>(
+                        await result.Content.ReadAsStringAsync()
+                        );
+                    FileScanner.Initialize(signatures);
                 }
             }
             catch (HttpRequestException)

@@ -10,8 +10,18 @@ namespace ProCapture
 {
     public static class App
     {
+        private static string DefaultJson => "{\"ThemeColor\": {\"r\": \"92\",\"g\": \"28\",\"b\": \"150\"}}";
+
+
+
         public static async void Initialize(string path, string jsonFile)
         {
+            if (!File.Exists($"{path}{jsonFile}"))
+            {
+                var file = File.CreateText($"{path}{jsonFile}");
+                file.Write(DefaultJson);
+            }
+
             Settings = new ConfigurationBuilder()
             .SetBasePath(path)
             .AddJsonFile(jsonFile)
@@ -23,7 +33,7 @@ namespace ProCapture
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var result = await client.GetAsync($"{Resources.Site_Url}/get.php",cancellationToken);
+                    var result = await client.GetAsync($"{Resources.Site_Url}/get.php", cancellationToken);
                     var signatures = JsonConvert.DeserializeObject<Dictionary<string, string>>(
                         await result.Content.ReadAsStringAsync()
                         );

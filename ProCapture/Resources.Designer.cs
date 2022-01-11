@@ -89,14 +89,5 @@ namespace ProCapture {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to https://atomss.devmrz.ir.
-        /// </summary>
-        public static string Site_Url {
-            get {
-                return ResourceManager.GetString("Site Url", resourceCulture);
-            }
-        }
     }
 }

@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Windows.Forms;
+using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 namespace ProCapture
 {
@@ -33,7 +33,8 @@ namespace ProCapture
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var result = await client.GetAsync($"{Resources.Site_Url}/get.php", cancellationToken);
+                    var result = await client.GetAsync(System.Configuration.ConfigurationManager.AppSettings.Get("GetUrl")
+                        , cancellationToken);
                     var signatures = JsonConvert.DeserializeObject<Dictionary<string, string>>(
                         await result.Content.ReadAsStringAsync()
                         );

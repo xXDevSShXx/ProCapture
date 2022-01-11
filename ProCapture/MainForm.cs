@@ -1,20 +1,17 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Drawing;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Threading;
+using ProCapture.Models;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Net.Http;
-using Newtonsoft.Json;
-using System.Text.Json;
-using System.ComponentModel;
-using System.Data;
-using System.Text;
-using System.Threading;
-using ProCapture.Models;
-using System.Diagnostics;
+using System.Configuration;
 
 namespace ProCapture
 {
@@ -272,7 +269,7 @@ namespace ProCapture
 
                         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                        var result = await client.PostAsync($"{Resources.Site_Url}/insert.php", content
+                        var result = await client.PostAsync(ConfigurationManager.AppSettings.Get("InsertUrl"), content
                             , cancellationToken);
 
                         return new ResponseBase<string>(true, await result.Content.ReadAsStringAsync());

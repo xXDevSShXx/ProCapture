@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Configuration;
+using ProCapture.Properties;
 
 namespace ProCapture
 {
@@ -269,8 +270,7 @@ namespace ProCapture
 
                         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                        var result = await client.PostAsync(ConfigurationManager.AppSettings.Get("InsertUrl"), content
-                            , cancellationToken);
+                        var result = await client.PostAsync(Settings.Default.InsertUrl, content , cancellationToken);
 
                         return new ResponseBase<string>(true, await result.Content.ReadAsStringAsync());
                     }

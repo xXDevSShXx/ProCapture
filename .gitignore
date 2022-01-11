@@ -362,5 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-#Config Files
-*.config
+#Setting Files
+*.[Ss]ettings
+Settings.Designer.cs

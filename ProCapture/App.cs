@@ -33,8 +33,7 @@ namespace ProCapture
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var result = await client.GetAsync(System.Configuration.ConfigurationManager.AppSettings.Get("GetUrl")
-                        , cancellationToken);
+                    var result = await client.GetAsync(Properties.Settings.Default.GetUrl , cancellationToken);
                     var signatures = JsonConvert.DeserializeObject<Dictionary<string, string>>(
                         await result.Content.ReadAsStringAsync()
                         );

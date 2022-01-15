@@ -58,9 +58,9 @@ namespace ProCapture
             Graphics graphics = e.Graphics;
 
             Pen pen = new Pen(Color.FromArgb(
-                  Convert.ToInt32(App.Settings["ThemeColor:r"])
-                , Convert.ToInt32(App.Settings["ThemeColor:g"])
-                , Convert.ToInt32(App.Settings["ThemeColor:b"])
+                  Convert.ToInt32(App.Configurations["ThemeColor:r"])
+                , Convert.ToInt32(App.Configurations["ThemeColor:g"])
+                , Convert.ToInt32(App.Configurations["ThemeColor:b"])
                 ), 2);
             Rectangle rectangle = new Rectangle(0, 0, Width, Height);
 
@@ -270,7 +270,7 @@ namespace ProCapture
 
                         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                        var result = await client.PostAsync(Settings.Default.InsertUrl, content , cancellationToken);
+                        var result = await client.PostAsync(App.Settings["InsertUrl"], content , cancellationToken);
 
                         return new ResponseBase<string>(true, await result.Content.ReadAsStringAsync());
                     }

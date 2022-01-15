@@ -1,5 +1,5 @@
 # Pro Capture
-
+This App Will Help AtomCraft(AtomCraft.Pro) Staffs:
 ## Usage
  - Take SS Easily
  - See Their SS Results in One Place

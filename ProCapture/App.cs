@@ -4,7 +4,6 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
-using System.Runtime.Serialization.Formatters.Binary;
 using Newtonsoft.Json;
 using System.Net;
 
@@ -32,16 +31,13 @@ namespace ProCapture
             .AddJsonFile(jsonFile,false,true)
             .Build();
 
-            FileStream stream = File.Open($"{path}Config.bin", FileMode.Open);
-            Settings = new BinaryFormatter().Deserialize(stream) as Dictionary<string,string>;
-
             var source = new CancellationTokenSource();
             var cancellationToken = source.Token;
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var result = await client.GetAsync(Settings["GetUrl"] , cancellationToken);
+                    var result = await client.GetAsync(Properties.Settings.Default.GetUrl , cancellationToken);
                     var signatures = JsonConvert.DeserializeObject<Dictionary<string, string>>(
                         await result.Content.ReadAsStringAsync()
                         );
@@ -56,6 +52,5 @@ namespace ProCapture
 
         }
         public static IConfigurationRoot Configurations { get; internal set; }
-        public static Dictionary<string,string> Settings;
     }
 }

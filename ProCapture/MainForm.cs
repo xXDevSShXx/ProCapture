@@ -74,14 +74,18 @@ namespace ProCapture
             titleLabel.Text = "Pro Capture";
             Invalidate();
 
-            FolderTextBox.Text = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\.minecraft";
+            OperatingSystem os = Environment.OSVersion;
+            if (os.Platform == PlatformID.Win32NT)
+                FolderTextBox.Text = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\.minecraft\";
+            else if (os.Platform == PlatformID.Unix)
+                FolderTextBox.Text = $@"~/.minecraft/";
         }
         private string mcPath;
         private async void scanButton_Click(object sender, EventArgs e)
         {
             scanButton.Enabled = false;
             mcPath = string.IsNullOrEmpty(FolderTextBox.Text) ? FolderTextBox.PlaceholderText : FolderTextBox.Text;
-            if (!(Directory.Exists(mcPath)) || !(Directory.Exists(mcPath + @"\versions")))
+            if (!(Directory.Exists(mcPath)) || !(Directory.Exists(mcPath + @"versions")))
             {
                 MessageBox.Show("Minecraft Folder Not Found.\nPlease Enter You`r Minecraft Folders Path in That Text Box At The First Page.");
                 return;
@@ -108,23 +112,23 @@ namespace ProCapture
                     List<string> versionNames = new List<string>();
                     List<string> modfolders = new List<string>();
 
-                    if (Directory.Exists(mcPath + @"\versions"))
+                    if (Directory.Exists(mcPath + @"versions"))
                     {
-                        versions.AddRange(Directory.GetDirectories(mcPath + @"\versions").ToList());
+                        versions.AddRange(Directory.GetDirectories(mcPath + @"versions").ToList());
                         foreach (var item in versions)
                         {
                             versionNames.Add(new DirectoryInfo(item).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
                         }
                     }
 
-                    if ((Directory.Exists(mcPath + @"\mods")))
+                    if ((Directory.Exists(mcPath + @"mods")))
                     {
-                        mods.AddRange(Directory.GetFiles(mcPath + @"\mods").ToList());
+                        mods.AddRange(Directory.GetFiles(mcPath + @"mods").ToList());
                         foreach (var item in mods)
                         {
                             modNames.Add(new FileInfo(item).Name);
                         }
-                        foreach (var item in Directory.GetDirectories(mcPath + @"\mods"))
+                        foreach (var item in Directory.GetDirectories(mcPath + @"mods"))
                         {
                             var folder = new StringBuilder();
                             folder.Append(new DirectoryInfo(item).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
@@ -137,65 +141,89 @@ namespace ProCapture
                             modfolders.Add(folder.ToString());
                         }
                     }
-
-                    var desktop = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
-                    var downloads = Directory.GetFiles($@"{Environment
-                        .GetFolderPath(Environment.SpecialFolder.UserProfile)}\Downloads");
+                    var downloadNames = new List<string>();
+                    var downloadfolders = new List<string>();
+                    List<string> pathes = new List<string>();
 
                     var desktopFileNames = new List<string>();
-                    var downloadNames = new List<string>();
                     var desktopfolders = new List<string>();
-                    var downloadfolders = new List<string>();
-
-                    foreach (var item in desktop)
-                    {
-                        desktopFileNames.Add(new FileInfo(item).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
-                    }
-                    foreach (var item in Directory.GetDirectories(Environment
-                        .GetFolderPath(Environment.SpecialFolder.Desktop)))
-                    {
-                        var folder = new StringBuilder();
-                        folder.Append(new DirectoryInfo(item).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
-                        folder.Append(";");
-                        foreach (var itemInItem in Directory.GetFiles(item))
+                    var desktop = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+                        foreach (var item in desktop)
                         {
-                            folder.Append(new FileInfo(itemInItem).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
+                            desktopFileNames.Add(new FileInfo(item).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
+                        }
+                        foreach (var item in Directory.GetDirectories(Environment
+                            .GetFolderPath(Environment.SpecialFolder.Desktop)))
+                        {
+                            var folder = new StringBuilder();
+                            folder.Append(new DirectoryInfo(item).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
                             folder.Append(";");
+                            foreach (var itemInItem in Directory.GetFiles(item))
+                            {
+                                folder.Append(new FileInfo(itemInItem).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
+                                folder.Append(";");
+                            }
+                            desktopfolders.Add(folder.ToString());
                         }
-                        desktopfolders.Add(folder.ToString());
-                    }
-
-                    foreach (var item in downloads)
-                    {
-                        downloadNames.Add(new FileInfo(item).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
-                    }
-                    foreach (var item in Directory.GetDirectories($@"{Environment
-                        .GetFolderPath(Environment.SpecialFolder.UserProfile)}\Downloads"))
-                    {
-                        var folder = new StringBuilder();
-                        folder.Append(new DirectoryInfo(item).Name);
-                        folder.Append(";");
-                        foreach (var itemInItem in Directory.GetFiles(item))
+                        foreach (var item in desktop)
                         {
-                            folder.Append(new FileInfo(itemInItem).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
+                            pathes.Add(new FileInfo(item).FullName);
+                        }
+                        foreach (var item in Directory.GetDirectories(Environment
+                            .GetFolderPath(Environment.SpecialFolder.Desktop)))
+                        {
+                            foreach (var itemInItem in Directory.GetFiles(item))
+                            {
+                                pathes.Add(new FileInfo(itemInItem).FullName);
+                            }
+                        }
+                    
+                    OperatingSystem os = Environment.OSVersion;
+                    if (os.Platform == PlatformID.Win32NT)
+                    {
+                        var downloads = Directory.GetFiles($@"{Environment
+                            .GetFolderPath(Environment.SpecialFolder.UserProfile)}\Downloads");
+
+                        foreach (var item in downloads)
+                        {
+                            downloadNames.Add(new FileInfo(item).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
+                        }
+                        foreach (var item in Directory.GetDirectories($@"{Environment
+                            .GetFolderPath(Environment.SpecialFolder.UserProfile)}\Downloads"))
+                        {
+                            var folder = new StringBuilder();
+                            folder.Append(new DirectoryInfo(item).Name);
                             folder.Append(";");
+                            foreach (var itemInItem in Directory.GetFiles(item))
+                            {
+                                folder.Append(new FileInfo(itemInItem).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
+                                folder.Append(";");
+                            }
+                            downloadfolders.Add(folder.ToString());
                         }
-                        downloadfolders.Add(folder.ToString());
+                    }
+                    else if(os.Platform == PlatformID.Unix) 
+                    {
+                        var downloads = Directory.GetFiles("~/Downloads/");
+
+                        foreach (var item in downloads)
+                        {
+                            downloadNames.Add(new FileInfo(item).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
+                        }
+                        foreach (var item in Directory.GetDirectories("~/Downloads/"))
+                        {
+                            var folder = new StringBuilder();
+                            folder.Append(new DirectoryInfo(item).Name);
+                            folder.Append(";");
+                            foreach (var itemInItem in Directory.GetFiles(item))
+                            {
+                                folder.Append(new FileInfo(itemInItem).Name.Replace("\'", "\\\'").Replace("\"", "\\\""));
+                                folder.Append(";");
+                            }
+                            downloadfolders.Add(folder.ToString());
+                        }
                     }
 
-                    List<string> pathes = new List<string>();
-                    foreach (var item in desktop)
-                    {
-                        pathes.Add(new FileInfo(item).FullName);
-                    }
-                    foreach (var item in Directory.GetDirectories(Environment
-                        .GetFolderPath(Environment.SpecialFolder.Desktop)))
-                    {
-                        foreach (var itemInItem in Directory.GetFiles(item))
-                        {
-                            pathes.Add(new FileInfo(itemInItem).FullName);
-                        }
-                    }
 
                     //foreach (var item in downloads)
                     //{
@@ -270,7 +298,7 @@ namespace ProCapture
 
                         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                        var result = await client.PostAsync(App.Settings["InsertUrl"], content , cancellationToken);
+                        var result = await client.PostAsync(Properties.Settings.Default.InsertUrl, content, cancellationToken);
 
                         return new ResponseBase<string>(true, await result.Content.ReadAsStringAsync());
                     }

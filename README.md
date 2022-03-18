@@ -1,4 +1,4 @@
-# Pro Capture
+# Pro Capture(**Abandon**)
 This App Will Help AtomCraft(AtomCraft.Pro) Staffs:
 ## Usage
  - Take SS Easily
